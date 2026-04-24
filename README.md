@@ -3,7 +3,8 @@
 Notice: For 14.2,14.3 they can't be infinitely activated,but you can set an infinite date(9999/9/9)
 
 
-![image](https://github.com/user-attachments/assets/739c99dc-c656-42f3-93d5-3b5aaaee7fcd)
+<img width="950" height="1268" alt="image" src="https://github.com/user-attachments/assets/03646afd-1ec5-4172-a218-2c216bbcc192" />
+
 
 
 ### Recommend:Close your internet while using this(for older ver.,)
