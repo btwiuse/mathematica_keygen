@@ -21,8 +21,3 @@ It's available for **any*** version of mathematica and system modeler.
 for mathematica: { 59222 },
 
 for system modeler : { 48967	4912	62774	42446	30046	4961	61182	31889	22384 }, **FOR LEGACY VERSIONS ONLY**
-
-
----------------------------------------------------------------------
-
-Sincere thanks sanet.st!
