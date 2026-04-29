@@ -27,16 +27,16 @@ type MathPass struct {
 
 // NewMathPass creates a MathPass for the given Math ID and version.
 // If customKey is non-empty and matches the required format it is used;
-// otherwise a random activation key is generated.
-func NewMathPass(mathID, version, customKey string) *MathPass {
+// otherwise a random activation key is generated using rng.
+func NewMathPass(mathID, version, customKey string, rng *rand.Rand) *MathPass {
 	mp := &MathPass{}
 	mp.version = parseVersion(version)
 	mp.setMathID(mathID)
-	fmt := mp.activationKeyFormat()
-	if customKey != "" && checkFormat(fmt, customKey) {
+	keyFmt := mp.activationKeyFormat()
+	if customKey != "" && checkFormat(keyFmt, customKey) {
 		mp.activationKey = customKey
 	} else {
-		mp.activationKey = randomActivationKey(fmt)
+		mp.activationKey = randomActivationKey(keyFmt, rng)
 	}
 	return mp
 }
@@ -208,14 +208,14 @@ func checkFormat(format, s string) bool {
 }
 
 // randomActivationKey generates a random key matching the given format string.
-func randomActivationKey(format string) string {
+func randomActivationKey(format string, rng *rand.Rand) string {
 	var sb strings.Builder
 	for i := 0; i < len(format); i++ {
 		switch format[i] {
 		case 'x':
-			sb.WriteByte(byte('0' + rand.Intn(10)))
+			sb.WriteByte(byte('0' + rng.Intn(10)))
 		case 'a':
-			sb.WriteByte(byte('A' + rand.Intn(26)))
+			sb.WriteByte(byte('A' + rng.Intn(26)))
 		default:
 			sb.WriteByte(format[i])
 		}
@@ -242,7 +242,7 @@ func dateAfter(days int) string {
 }
 
 func main() {
-	rand.Seed(time.Now().UnixNano()) //nolint:staticcheck
+	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
 
 	reader := bufio.NewReader(os.Stdin)
 
@@ -258,7 +258,7 @@ func main() {
 	expireDate, _ := reader.ReadString('\n')
 	expireDate = strings.TrimSpace(expireDate)
 
-	mp := NewMathPass(mathID, "14.1.0", customKey)
+	mp := NewMathPass(mathID, "14.1.0", customKey, rng)
 	mp.GeneratePassword("800001", expireDate)
 
 	fmt.Printf("Activation Key: %s\n", mp.activationKey)
