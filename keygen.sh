@@ -205,7 +205,9 @@ generatePasswordV14_1_0() {
                     return c1 + c2 * 256
             }
         }
-        return c1 + c2 * 256   # fallback (c1=256, c2=256)
+        # Fallback: c1=256, c2=256 after both loops exhaust without a match.
+        # This mirrors the identical fallback in the Go source (return c1 | (c2 << 8)).
+        return c1 + c2 * 256
     }
 
     # ------------------------------------------------------------------
