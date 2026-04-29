@@ -1,4 +1,4 @@
-import * as readline from "readline";
+import * as readline from "node:readline";
 
 const hashCode1 = 0b1000001011100001; // 33505 / 0x82E1
 const hashCode2 = 0b1000001100100101; // 33573 / 0x8325
