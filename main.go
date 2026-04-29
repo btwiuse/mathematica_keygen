@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"math"
 	"math/rand"
@@ -244,19 +245,40 @@ func dateAfter(days int) string {
 func main() {
 	rng := rand.New(rand.NewSource(time.Now().UnixNano()))
 
-	reader := bufio.NewReader(os.Stdin)
+	flag.Usage = func() {
+		fmt.Fprintf(os.Stderr, "Usage: %s [mathid [activation_key]]\n\n", os.Args[0])
+		fmt.Fprintln(os.Stderr, "  mathid         Math ID in the format xxxx-xxxxx-xxxxx")
+		fmt.Fprintln(os.Stderr, "  activation_key Activation key in the format xxxx-xxxx-aaaaaa (optional)")
+		fmt.Fprintln(os.Stderr, "\nIf arguments are omitted, the program runs in interactive mode.")
+		flag.PrintDefaults()
+	}
+	flag.Parse()
 
-	fmt.Print("Math ID (xxxx-xxxxx-xxxxx): ")
-	mathID, _ := reader.ReadString('\n')
-	mathID = strings.TrimSpace(mathID)
+	args := flag.Args()
 
-	fmt.Print("Activation Key (leave blank to generate one, format xxxx-xxxx-aaaaaa): ")
-	customKey, _ := reader.ReadString('\n')
-	customKey = strings.TrimSpace(customKey)
+	var mathID, customKey, expireDate string
 
-	fmt.Print("Expiry Date (YYYYMMDD, default 999 days from now): ")
-	expireDate, _ := reader.ReadString('\n')
-	expireDate = strings.TrimSpace(expireDate)
+	switch len(args) {
+	case 0:
+		reader := bufio.NewReader(os.Stdin)
+
+		fmt.Print("Math ID (xxxx-xxxxx-xxxxx): ")
+		mathID, _ = reader.ReadString('\n')
+		mathID = strings.TrimSpace(mathID)
+
+		fmt.Print("Activation Key (leave blank to generate one, format xxxx-xxxx-aaaaaa): ")
+		customKey, _ = reader.ReadString('\n')
+		customKey = strings.TrimSpace(customKey)
+
+		fmt.Print("Expiry Date (YYYYMMDD, default 999 days from now): ")
+		expireDate, _ = reader.ReadString('\n')
+		expireDate = strings.TrimSpace(expireDate)
+	case 1:
+		mathID = args[0]
+	default:
+		mathID = args[0]
+		customKey = args[1]
+	}
 
 	mp := NewMathPass(mathID, "14.1.0", customKey, rng)
 	mp.GeneratePassword("800001", expireDate)
